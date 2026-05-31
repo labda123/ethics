@@ -1,0 +1,58 @@
+import numpy as np
+
+# Perceptron WITH bias
+class PerceptronWithBias:
+    def __init__(self, input_size):
+        self.weights = np.zeros(input_size + 1)
+
+    def train(self, X, y, lr, epochs):
+        for _ in range(epochs):
+            for inputs, label in zip(X, y):
+                inputs = np.insert(inputs, 0, 1)  # bias input
+                prediction = np.dot(self.weights, inputs)
+                prediction = 1 if prediction >= 0 else 0
+                error = label - prediction
+                self.weights += lr * error * inputs
+
+    def predict(self, X):
+        result = []
+        for inputs in X:
+            inputs = np.insert(inputs, 0, 1)
+            prediction = np.dot(self.weights, inputs)
+            result.append(1 if prediction >= 0 else 0)
+        return result
+
+
+# Perceptron WITHOUT bias
+class PerceptronWithoutBias:
+    def __init__(self, input_size):
+        self.weights = np.zeros(input_size)
+
+    def train(self, X, y, lr, epochs):
+        for _ in range(epochs):
+            for inputs, label in zip(X, y):
+                prediction = np.dot(self.weights, inputs)
+                prediction = 1 if prediction >= 0 else 0
+                error = label - prediction
+                self.weights += lr * error * inputs
+
+    def predict(self, X):
+        result = []
+        for inputs in X:
+            prediction = np.dot(self.weights, inputs)
+            result.append(1 if prediction >= 0 else 0)
+        return result
+
+
+# Example dataset (XOR)
+X_train = np.array([[0,0],[0,1],[1,0],[1,1]])
+y_train = np.array([0,0,0,1])
+
+model1 = PerceptronWithBias(2)
+model1.train(X_train, y_train, lr=0.1, epochs=10)
+
+model2 = PerceptronWithoutBias(2)
+model2.train(X_train, y_train, lr=0.1, epochs=10)
+
+print("With Bias:", model1.predict(X_train))
+print("Without Bias:", model2.predict(X_train))
